@@ -1,26 +1,20 @@
-<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import Item from '$lib/Item.svelte';
-  import type { TItem } from '$lib/types';
-
-  export let index: number;
-  export let alignment: string;
-  export let originalClass: string | undefined;
-  export let slideStyle: string;
-  export let showItem: boolean;
-  export let item: TItem;
-  export let isFullscreen: boolean;
-
-  const dispatch = createEventDispatcher();
-
-  function handleSlideKeyUp(event: KeyboardEvent) {
-    // a11y support ^_^
-    const key = event.code;
-    let isEnterOrSpaceKey = key === 'Enter' || key === 'Space';
-    if (isEnterOrSpaceKey) {
-      dispatch('click', event);
-    }
+<script>import { createEventDispatcher } from "svelte";
+import Item from "./Item.svelte";
+export let index;
+export let alignment;
+export let originalClass;
+export let slideStyle;
+export let showItem;
+export let item;
+export let isFullscreen;
+const dispatch = createEventDispatcher();
+function handleSlideKeyUp(event) {
+  const key = event.code;
+  let isEnterOrSpaceKey = key === "Enter" || key === "Space";
+  if (isEnterOrSpaceKey) {
+    dispatch("click", event);
   }
+}
 </script>
 
 <div

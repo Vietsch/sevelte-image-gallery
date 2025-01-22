@@ -1,6 +1,6 @@
 {
   "name": "@vietsch/svelte-image-gallery",
-  "version": "1.0.3",
+  "version": "1.0.2",
   "author": "Volker von Vietsch",
   "license": "MIT",
   "description": "Svelte image gallery ported from react-image-gallery",
@@ -8,15 +8,6 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Vietsch/svelte-image-gallery"
-  },
-  "scripts": {
-    "dev": "vite dev",
-    "build": "svelte-kit sync && svelte-package",
-    "buildDemo": "vite build",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --use-new-transformation",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
     "@sveltejs/adapter-static": "^1.0.1",
@@ -45,6 +36,7 @@
     "throttle-debounce": "^5.0.0"
   },
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "types": "./dist/index.d.ts",
       "svelte": "./dist/index.js",

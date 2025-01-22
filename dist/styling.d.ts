@@ -1,0 +1,12 @@
+import type { MouseOrKeyboard, Position } from './types';
+export declare const getThumbnailPositionClassName: (thumbnailPosition: Position) => string;
+export declare const getThumbsTranslate: (thumbsElement: HTMLElement, indexDifference: number, disableThumbnailScroll: boolean, thumbnailsWrapperWidth: number, thumbnailsWrapperHeight: number, isThumbnailVertical: boolean, numberItems: number) => number;
+export declare const getTranslateXForTwoSlide: (index: number, currentIndex: number, currentSlideOffset: number, previousIndex: number) => number;
+export declare const getIgClass: (modalFullscreen: boolean, additionalClass: string, currentlyUsingMouseOrKeyboard: MouseOrKeyboard) => string;
+export declare const getIgContentClass: (isFullscreen: boolean, thumbnailPosition: Position) => string;
+export declare const getSlideWrapperClass: (isRTL: boolean, thumbnailPosition: Position) => string;
+export declare const getSlideStyle: (index: number, currentIndex: number, previousIndex: number, numberItems: number, isRTL: boolean, currentSlideOffset: number, infinite: boolean, isSlideVisible: boolean, transitionStyle: string, useTranslate3D: boolean) => string;
+export declare const getBulletStyle: (index: number, currentIndex: number, itemBulletClass?: string) => string;
+export declare const getAlignmentClassName: (index: number, currentIndex: number, infinite: boolean, numberItems: number) => string;
+export declare const getThumbnailStyle: (isRTL: boolean, thumbsTranslate: number, isThumbnailVertical: boolean, useTranslate3D: boolean, thumbsStyle: string) => string;
+export declare const getIgThumbnailClass: (index: number, currentIndex: number, thumbnailClass: string | undefined) => string;
