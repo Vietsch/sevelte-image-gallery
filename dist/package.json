@@ -1,6 +1,6 @@
 {
   "name": "@vietsch/svelte-image-gallery",
-  "version": "1.0.2",
+  "version": "1.1.2",
   "author": "Volker von Vietsch",
   "license": "MIT",
   "description": "Svelte image gallery ported from react-image-gallery",

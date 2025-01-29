@@ -18,6 +18,7 @@ declare const __propDef: {
         handleResizeWidth?: ((newWidth: number) => void) | undefined;
         handleResizeHeight?: ((newHeight: number) => void) | undefined;
         slideThumbnailBar?: ((newIndex: number) => void) | undefined;
+        resetThumbnailPosition?: (() => void) | undefined;
     };
     events: {
         slidejump: CustomEvent<any>;
@@ -38,5 +39,6 @@ export default class ThumbnailWrapper extends SvelteComponentTyped<ThumbnailWrap
     get handleResizeWidth(): (newWidth: number) => void;
     get handleResizeHeight(): (newHeight: number) => void;
     get slideThumbnailBar(): (newIndex: number) => void;
+    get resetThumbnailPosition(): () => void;
 }
 export {};

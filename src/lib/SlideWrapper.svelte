@@ -37,6 +37,7 @@
   export let transitionStyle: string; // how should transitions be made? CSS, i.e. 'transform 450ms ease-out'
   export let swipingTransitionStyle: string;
   export let useTranslate3D: boolean;
+  export let containInPage: boolean = false;
 
   let isSwiping = false;
   $: currentTransitionStyle = isSwiping ? swipingTransitionStyle : transitionStyle;
@@ -179,6 +180,7 @@
             showItem={showItems[index]}
             {item}
             isFullscreen={false}
+            {containInPage}
             on:imageload={(event) => dispatch('imageload', { index, event })}
             on:imageerror={(event) => dispatch('imageerror', { index, event })}
             on:click
@@ -197,6 +199,7 @@
           showItem={showItems[index]}
           {item}
           isFullscreen={false}
+          {containInPage}
           on:imageload={(event) => dispatch('imageload', { index, event })}
           on:imageerror={(event) => dispatch('imageerror', { index, event })}
           on:click

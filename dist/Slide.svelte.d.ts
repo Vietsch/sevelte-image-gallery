@@ -9,9 +9,13 @@ declare const __propDef: {
         showItem: boolean;
         item: TItem;
         isFullscreen: boolean;
+        src?: string | undefined;
+        alt?: string | undefined;
+        active?: boolean | undefined;
+        direction?: string | undefined;
+        containInPage?: boolean | undefined;
     };
     events: {
-        imageload: CustomEvent<any>;
         imageerror: CustomEvent<any>;
         click: CustomEvent<any>;
         touchmove: CustomEvent<any>;

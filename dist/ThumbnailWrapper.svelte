@@ -95,6 +95,12 @@ $:
     (item, index) => getIgThumbnailClass(index, currentIndex, item.thumbnailClass)
   );
 const dispatch = createEventDispatcher();
+export function resetThumbnailPosition() {
+  if (thumbnails) {
+    thumbsTranslate = 0;
+    thumbsSwipedTranslate = 0;
+  }
+}
 </script>
 
 <ThumbnailSwipeWrapper

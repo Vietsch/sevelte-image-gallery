@@ -1,6 +1,7 @@
 import { SvelteComponentTyped } from "svelte";
 declare const __propDef: {
     props: {
+        [x: string]: any;
         original: string | undefined;
         fullscreen: string | undefined;
         description?: string | undefined;
@@ -12,6 +13,7 @@ declare const __propDef: {
         sizes?: string | undefined;
         srcset?: string | undefined;
         loading?: "eager" | "lazy" | undefined;
+        contain?: boolean | undefined;
     };
     events: {
         imageload: CustomEvent<any>;

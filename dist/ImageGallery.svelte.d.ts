@@ -43,6 +43,7 @@ declare const __propDef: {
         useTranslate3D?: boolean | undefined;
         isRTL?: boolean | undefined;
         useWindowKeyDown?: boolean | undefined;
+        containInPage?: boolean | undefined;
         slideToIndex?: ((index: number) => void) | undefined;
         play?: (() => void) | undefined;
         pause?: (() => void) | undefined;

@@ -4,6 +4,7 @@ import ThumbnailWrapper from "./ThumbnailWrapper.svelte";
 import { createEventDispatcher, onMount } from "svelte";
 import { debounce } from "throttle-debounce";
 import { getIgClass, getIgContentClass, getSlideWrapperClass } from "./styling";
+import Slide from "./Slide.svelte";
 export let flickThreshold = 0.4;
 export let items;
 export let showNav = true;
@@ -35,6 +36,7 @@ export let additionalClass = "";
 export let useTranslate3D = true;
 export let isRTL = false;
 export let useWindowKeyDown = true;
+export let containInPage = false;
 let hardTransition = false;
 $:
   defaultTransitionStyle = `transform ${slideDuration}ms ease-out`;
@@ -43,7 +45,8 @@ $:
   swipingTransitionStyle = `transform ${swipingTransitionDuration}ms ease-out`;
 $:
   transitionStyle = hardTransition ? noneTransitionStyle : defaultTransitionStyle;
-let currentIndex = 0;
+let currentIndex = startIndex;
+let direction = "";
 $: {
   hardTransition = true;
   currentIndex = startIndex;
@@ -79,14 +82,16 @@ let imageGallery;
 let slideWrapper;
 let thumbnailWrapper;
 const dispatch = createEventDispatcher();
+let containerHeight;
+let parentElement;
 function slideLeft() {
   slideTo(isRTL ? "right" : "left");
 }
 function slideRight() {
   slideTo(isRTL ? "left" : "right");
 }
-function slideTo(direction) {
-  const nextIndex = currentIndex + (direction === "left" ? -1 : 1);
+function slideTo(direction2) {
+  const nextIndex = currentIndex + (direction2 === "left" ? -1 : 1);
   slideToIndex(nextIndex);
 }
 export function slideToIndex(index) {
@@ -242,6 +247,9 @@ $:
       modalFullscreen = true;
     }
     isFullscreen = true;
+    if (thumbnailWrapper) {
+      thumbnailWrapper.slideThumbnailBar(currentIndex);
+    }
     dispatch("screenchange", { fullscreen: true });
   };
 $:
@@ -253,6 +261,7 @@ $:
         modalFullscreen = false;
       }
       isFullscreen = false;
+      slideToIndex(0);
       dispatch("screenchange", { fullscreen: false });
     }
   };
@@ -296,6 +305,15 @@ onMount(async () => {
   if (autoPlay) {
     _play();
   }
+  parentElement = imageGallery.parentElement;
+  updateContainerHeight();
+  const resizeObserver = new ResizeObserver(() => {
+    updateContainerHeight();
+  });
+  resizeObserver.observe(parentElement);
+  return () => {
+    resizeObserver.disconnect();
+  };
 });
 function initSlideWrapperResizeObserver() {
   if (!slideWrapper) {
@@ -368,6 +386,16 @@ $:
   onLazyLoad = (event) => {
     lazyLoaded[event.detail] = true;
   };
+function updateContainerHeight() {
+  if (containInPage && parentElement) {
+    const parentRect = parentElement.getBoundingClientRect();
+    const computedStyle = window.getComputedStyle(parentElement);
+    const verticalMargins = parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom);
+    containerHeight = parentRect.height - verticalMargins;
+  } else {
+    containerHeight = void 0;
+  }
+}
 </script>
 
 <div
@@ -375,6 +403,8 @@ $:
   aria-live="polite"
   role="region"
   bind:this={imageGallery}
+  style={containInPage ? `max-height: ${containerHeight}px;` : ''}
+  class:contain-in-page={containInPage}
   on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
   on:mousedown={handleMouseDown}
 >
@@ -384,6 +414,7 @@ $:
         bind:this={slideWrapper}
         {slideWrapperClass}
         {items}
+        {containInPage}
         {showNav}
         {showBullets}
         {showIndex}
@@ -448,6 +479,7 @@ $:
         bind:this={slideWrapper}
         {slideWrapperClass}
         {items}
+        {containInPage}
         {showNav}
         {showBullets}
         {showIndex}
