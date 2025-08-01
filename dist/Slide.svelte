@@ -1,44 +1,35 @@
-<script lang="ts">
-  import { createEventDispatcher } from 'svelte';
-  import Item from '$lib/Item.svelte';
-  import type { TItem } from '$lib/types';
-
-  export let index: number;
-  export let alignment: string;
-  export let originalClass: string | undefined;
-  export let slideStyle: string;
-  export let showItem: boolean;
-  export let item: TItem;
-  export let isFullscreen: boolean;
-  export let src = '';
-  export let alt = '';
-  export let active = false;
-  export let direction = '';
-  export let containInPage: boolean = false;
-
-  const dispatch = createEventDispatcher();
-
-  // Add logic to detect image orientation
-  let isPortrait = false;
-
-  function handleSlideKeyUp(event: KeyboardEvent) {
-    // a11y support ^_^
-    const key = event.code;
-    let isEnterOrSpaceKey = key === 'Enter' || key === 'Space';
-    if (isEnterOrSpaceKey) {
-      dispatch('click', event);
-    }
+<script>import { createEventDispatcher } from "svelte";
+import Item from "./Item.svelte";
+export let index;
+export let alignment;
+export let originalClass;
+export let slideStyle;
+export let showItem;
+export let item;
+export let isFullscreen;
+export let src = "";
+export let alt = "";
+export let active = false;
+export let direction = "";
+export let containInPage = false;
+const dispatch = createEventDispatcher();
+let isPortrait = false;
+function handleSlideKeyUp(event) {
+  const key = event.code;
+  let isEnterOrSpaceKey = key === "Enter" || key === "Space";
+  if (isEnterOrSpaceKey) {
+    dispatch("click", event);
   }
-
-  function handleImageLoad(event: Event) {
-    const img = event.target as HTMLImageElement;
-    isPortrait = img.naturalHeight > img.naturalWidth;
-  }
+}
+function handleImageLoad(event) {
+  const img = event.target;
+  isPortrait = img.naturalHeight > img.naturalWidth;
+}
 </script>
 
 <div
   aria-label={`Go to Slide ${index + 1}`}
-  tabindex="0"
+  tabIndex="0"
   class={`image-gallery-slide ${alignment} ${originalClass ?? ''}`}
   style={slideStyle}
   on:click={(e) => dispatch('click', e)}

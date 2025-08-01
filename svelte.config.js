@@ -8,7 +8,19 @@ const config = {
   preprocess: vitePreprocess(),
 
   kit: {
-    adapter: adapter()
+    adapter: adapter(),
+    files: {
+      lib: 'src/lib'
+    }
+  },
+  
+  package: {
+    dir: 'dist',
+    emitTypes: true,
+    exports: (filepath) => {
+      // Only include files from src/lib
+      return filepath.startsWith('src/lib/');
+    }
   }
 };
 

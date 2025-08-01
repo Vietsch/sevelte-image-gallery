@@ -25,7 +25,7 @@
   let disableSwipe = false;
   let disableThumbnailSwipe = false;
 
-  const PREFIX_URL = 'https://raw.githubusercontent.com/react2svelte/image-gallery/main/static/';
+  const PREFIX_URL = '/';
 
   function _getStaticImages() {
     let images: TItem[] = [];

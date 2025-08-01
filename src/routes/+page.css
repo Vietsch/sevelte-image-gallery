@@ -1,8 +1,8 @@
 body {
   margin: 0;
   padding: 0;
-  background: #f4f6f9;
-  color: #222;
+  background: black;
+  color: #ddd;
   font-family: 'Raleway', sans-serif;
 }
 
@@ -92,7 +92,7 @@ label {
 .app .image-gallery,
 .app-sandbox {
   margin: 0 auto;
-  width: 65%;
+  width: 75%;
 }
 
 @media (max-width: 1320px) {

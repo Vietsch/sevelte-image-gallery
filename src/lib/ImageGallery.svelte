@@ -6,6 +6,7 @@
   import { createEventDispatcher, onMount } from 'svelte';
   import { debounce } from 'throttle-debounce';
   import { getIgClass, getIgContentClass, getSlideWrapperClass } from '$lib/styling';
+  import Slide from './Slide.svelte';
 
   export let flickThreshold: number = 0.4;
   export let items: TItem[];
@@ -48,6 +49,7 @@
   export let useTranslate3D: boolean = true;
   export let isRTL: boolean = false;
   export let useWindowKeyDown = true;
+  export let containInPage: boolean = false;
 
   // transition styles for the slides
   let hardTransition = false;
@@ -56,7 +58,8 @@
   $: swipingTransitionStyle = `transform ${swipingTransitionDuration}ms ease-out`;
   $: transitionStyle = hardTransition ? noneTransitionStyle : defaultTransitionStyle;
 
-  let currentIndex = 0;
+  let currentIndex = startIndex;
+  let direction = '';
   $: {
     // this bit is quite ugly.
     // we set 'hardTransition' and then do the update a little bit later,
@@ -97,6 +100,27 @@
   let thumbnailWrapper: ThumbnailWrapper;
 
   const dispatch = createEventDispatcher();
+
+  // Add a reactive variable to track container height
+  let containerHeight: number;
+  let parentElement: HTMLElement;
+
+  // Add orientation change handling
+  let screenOrientation: string = '';
+  
+  function handleOrientationChange() {
+    if (isFullscreen) {
+      // Force a resize calculation when orientation changes
+      updateContainerHeight();
+      handleResize();
+    }
+  }
+  
+  // Update orientation on change
+  $: if (typeof window !== 'undefined') {
+    screenOrientation = window.screen.orientation?.type || 
+                       (window.innerHeight > window.innerWidth ? 'portrait' : 'landscape');
+  }
 
   function slideLeft() {
     slideTo(isRTL ? 'right' : 'left');
@@ -278,6 +302,9 @@
       modalFullscreen = true;
     }
     isFullscreen = true;
+    if (thumbnailWrapper) {
+      thumbnailWrapper.slideThumbnailBar(currentIndex);
+    }
     dispatch('screenchange', { fullscreen: true });
   };
 
@@ -289,6 +316,8 @@
         modalFullscreen = false;
       }
       isFullscreen = false;
+      // Slide to first image when exiting fullscreen
+      slideToIndex(0);
       dispatch('screenchange', { fullscreen: false });
     }
   };
@@ -347,6 +376,20 @@
     if (autoPlay) {
       _play();
     }
+    // Get parent element height on mount
+    parentElement = imageGallery.parentElement;
+    updateContainerHeight();
+    
+    // Set up resize observer to update height when parent changes
+    const resizeObserver = new ResizeObserver(() => {
+      updateContainerHeight();
+    });
+    
+    resizeObserver.observe(parentElement);
+    
+    return () => {
+      resizeObserver.disconnect();
+    };
   });
 
   function initSlideWrapperResizeObserver() {
@@ -423,6 +466,20 @@
   $: onLazyLoad = (event: { detail: number }) => {
     lazyLoaded[event.detail] = true;
   };
+
+  function updateContainerHeight() {
+    if (containInPage && parentElement) {
+      // Get parent height and subtract any margins/padding
+      const parentRect = parentElement.getBoundingClientRect();
+      const computedStyle = window.getComputedStyle(parentElement);
+      const verticalMargins = parseFloat(computedStyle.marginTop) + 
+                            parseFloat(computedStyle.marginBottom);
+      
+      containerHeight = parentRect.height - verticalMargins;
+    } else {
+      containerHeight = undefined; // Use default height when not containing
+    }
+  }
 </script>
 
 <div
@@ -430,6 +487,10 @@
   aria-live="polite"
   role="region"
   bind:this={imageGallery}
+  style={containInPage ? `max-height: ${containerHeight}px;` : ''}
+  class:contain-in-page={containInPage || isFullscreen}
+  class:fullscreen-portrait={isFullscreen && screenOrientation.includes('portrait')}
+  class:fullscreen-landscape={isFullscreen && screenOrientation.includes('landscape')}
   on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
   on:mousedown={handleMouseDown}
 >
@@ -439,6 +500,7 @@
         bind:this={slideWrapper}
         {slideWrapperClass}
         {items}
+        {containInPage}
         {showNav}
         {showBullets}
         {showIndex}
@@ -503,6 +565,7 @@
         bind:this={slideWrapper}
         {slideWrapperClass}
         {items}
+        {containInPage}
         {showNav}
         {showBullets}
         {showIndex}
@@ -543,7 +606,48 @@
   </div>
 </div>
 
+<style>
+  /* Fullscreen mobile styles */
+  .fullscreen-portrait :global(img) {
+    max-height: 100vh !important;
+    max-width: 100vw !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  
+  .fullscreen-landscape :global(img) {
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  
+  /* Ensure fullscreen container takes full viewport */
+  .fullscreen-portrait,
+  .fullscreen-landscape {
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Ensure content fills available space */
+  .fullscreen-portrait :global(.image-gallery-content),
+  .fullscreen-landscape :global(.image-gallery-content) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+</style>
+
 <svelte:window
   on:keydown={useWindowKeyDown ? handleKeyDown : undefined}
   on:fullscreenchange={handleScreenChange}
+  on:orientationchange={handleOrientationChange}
+  on:resize={handleOrientationChange}
 />

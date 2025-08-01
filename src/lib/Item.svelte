@@ -12,14 +12,18 @@
   export let sizes = '';
   export let srcset = '';
   export let loading: 'eager' | 'lazy' = 'eager';
+  export let contain = false;
 
   const itemSrc = isFullscreen ? fullscreen || original : original;
 
   const dispatch = createEventDispatcher();
+
+  // Combine the base class with any additional classes from $$restProps
+  $: combinedClass = `image-gallery-image ${contain ? 'contain' : ''} ${$$restProps.class || ''}`.trim();
 </script>
 
 <img
-  class="image-gallery-image"
+  class={combinedClass}
   src={itemSrc}
   alt={originalAlt}
   {srcset}
