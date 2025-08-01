@@ -428,6 +428,7 @@
 <div
   class={igClass}
   aria-live="polite"
+  role="region"
   bind:this={imageGallery}
   on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
   on:mousedown={handleMouseDown}

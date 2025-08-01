@@ -25,7 +25,7 @@
 
 <div
   aria-label={`Go to Slide ${index + 1}`}
-  tabIndex="-1"
+  tabindex="0"
   class={`image-gallery-slide ${alignment} ${originalClass ?? ''}`}
   style={slideStyle}
   on:click={(e) => dispatch('click', e)}
