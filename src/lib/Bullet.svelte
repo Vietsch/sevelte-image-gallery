@@ -14,4 +14,4 @@
   on:click={(event) => dispatch('click', event)}
   aria-pressed={currentIndex === index}
   aria-label={`Go to Slide ${index + 1}`}
-/>
+></button>

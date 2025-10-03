@@ -1,4 +1,4 @@
-import { SvelteComponentTyped } from "svelte";
+import { SvelteComponent } from "svelte";
 import type { TItem } from './types';
 declare const __propDef: {
     props: {
@@ -28,7 +28,8 @@ declare const __propDef: {
         transitionStyle: string;
         swipingTransitionStyle: string;
         useTranslate3D: boolean;
-        getElem?: (() => HTMLElement) | undefined;
+        containInPage?: boolean;
+        getElem?: () => HTMLElement;
     };
     events: {
         click: CustomEvent<any>;
@@ -44,11 +45,13 @@ declare const __propDef: {
         [evt: string]: CustomEvent<any>;
     };
     slots: {};
+    exports?: {} | undefined;
+    bindings?: string | undefined;
 };
 export type SlideWrapperProps = typeof __propDef.props;
 export type SlideWrapperEvents = typeof __propDef.events;
 export type SlideWrapperSlots = typeof __propDef.slots;
-export default class SlideWrapper extends SvelteComponentTyped<SlideWrapperProps, SlideWrapperEvents, SlideWrapperSlots> {
+export default class SlideWrapper extends SvelteComponent<SlideWrapperProps, SlideWrapperEvents, SlideWrapperSlots> {
     get getElem(): () => HTMLElement;
 }
 export {};

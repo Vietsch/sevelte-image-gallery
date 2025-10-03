@@ -10,8 +10,6 @@
   export let showItem: boolean;
   export let item: TItem;
   export let isFullscreen: boolean;
-  export let src = '';
-  export let alt = '';
   export let active = false;
   export let direction = '';
   export let containInPage: boolean = false;
@@ -74,12 +72,12 @@
       on:imageerror
     />
   {:else}
-    <div style="height: 100%" />
+    <div style="height: 100%"></div>
   {/if}
 </div>
 
 <style>
-  .slide {
+  .image-gallery-slide {
     position: absolute;
     top: 0;
     left: 0;
@@ -87,23 +85,20 @@
     height: 100%;
     opacity: 0;
     transition: opacity 0.5s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .slide.active {
+  .image-gallery-slide.active {
     opacity: 1;
   }
 
-  .slide img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  .slide-next {
+  .image-gallery-slide.slide-next {
     animation: slideFromRight 0.5s ease;
   }
 
-  .slide-prev {
+  .image-gallery-slide.slide-prev {
     animation: slideFromLeft 0.5s ease;
   }
 
@@ -117,33 +112,28 @@
     to { transform: translateX(0); }
   }
 
-  .image-gallery-slide {
-    height: 100%;
+  :global(.image-gallery-slide .image-gallery-image) {
     width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    height: 100%;
+    object-fit: cover;
   }
-  
-  img {
-    max-width: 100%;
-  }
-  
-  img.contain {
+
+  :global(.image-gallery-slide .image-gallery-image.contain) {
     object-fit: contain;
     height: auto;
     width: auto;
     max-height: 100%;
+    max-width: 100%;
   }
-  
+
   /* Portrait specific handling */
-  .portrait img.contain {
+  .portrait :global(.image-gallery-image.contain) {
     max-height: 100%;
     width: auto;
   }
-  
+
   /* Landscape specific handling */
-  .landscape img.contain {
+  .landscape :global(.image-gallery-image.contain) {
     max-width: 100%;
     height: auto;
   }

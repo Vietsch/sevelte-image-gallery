@@ -3,10 +3,14 @@
   - thumbnailswiped
   - thumbsslideoffset
 -->
-<script>import { swipeable, UP, DOWN, LEFT, RIGHT } from "@react2svelte/swipeable";
+<script>import { swipeable } from "./utils/swipe";
 import { createEventDispatcher } from "svelte";
 import clsx from "clsx";
 import { getThumbnailPositionClassName } from "./styling";
+const UP = "UP";
+const DOWN = "DOWN";
+const LEFT = "LEFT";
+const RIGHT = "RIGHT";
 let dispatch = createEventDispatcher();
 export let disableThumbnailSwipe;
 export let stopPropagation;
@@ -108,9 +112,11 @@ $:
 
 <div
   class={cls}
-  use:swipeable={{ delta: 0 }}
-  on:swiping={(e) => handleThumbnailSwiping(e.detail)}
-  on:swiped={() => handleOnThumbnailSwiped()}
+  use:swipeable={{ 
+    delta: 0,
+    onSwiping: handleThumbnailSwiping,
+    onSwiped: handleOnThumbnailSwiped
+  }}
 >
   <slot />
 </div>

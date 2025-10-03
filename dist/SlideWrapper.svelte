@@ -33,6 +33,7 @@ export let flickThreshold;
 export let transitionStyle;
 export let swipingTransitionStyle;
 export let useTranslate3D;
+export let containInPage = false;
 let isSwiping = false;
 $:
   currentTransitionStyle = isSwiping ? swipingTransitionStyle : transitionStyle;
@@ -152,6 +153,7 @@ $:
             showItem={showItems[index]}
             {item}
             isFullscreen={false}
+            {containInPage}
             on:imageload={(event) => dispatch('imageload', { index, event })}
             on:imageerror={(event) => dispatch('imageerror', { index, event })}
             on:click
@@ -170,6 +172,7 @@ $:
           showItem={showItems[index]}
           {item}
           isFullscreen={false}
+          {containInPage}
           on:imageload={(event) => dispatch('imageload', { index, event })}
           on:imageerror={(event) => dispatch('imageerror', { index, event })}
           on:click

@@ -84,6 +84,17 @@ let thumbnailWrapper;
 const dispatch = createEventDispatcher();
 let containerHeight;
 let parentElement;
+let screenOrientation = "";
+function handleOrientationChange() {
+  if (isFullscreen) {
+    updateContainerHeight();
+    handleResize();
+  }
+}
+$:
+  if (typeof window !== "undefined") {
+    screenOrientation = window.screen.orientation?.type || (window.innerHeight > window.innerWidth ? "portrait" : "landscape");
+  }
 function slideLeft() {
   slideTo(isRTL ? "right" : "left");
 }
@@ -306,7 +317,9 @@ onMount(async () => {
     _play();
   }
   parentElement = imageGallery.parentElement;
-  updateContainerHeight();
+  if (parentElement) {
+    updateContainerHeight();
+  }
   const resizeObserver = new ResizeObserver(() => {
     updateContainerHeight();
   });
@@ -393,7 +406,7 @@ function updateContainerHeight() {
     const verticalMargins = parseFloat(computedStyle.marginTop) + parseFloat(computedStyle.marginBottom);
     containerHeight = parentRect.height - verticalMargins;
   } else {
-    containerHeight = void 0;
+    containerHeight = 0;
   }
 }
 </script>
@@ -404,7 +417,9 @@ function updateContainerHeight() {
   role="region"
   bind:this={imageGallery}
   style={containInPage ? `max-height: ${containerHeight}px;` : ''}
-  class:contain-in-page={containInPage}
+  class:contain-in-page={containInPage || isFullscreen}
+  class:fullscreen-portrait={isFullscreen && screenOrientation.includes('portrait')}
+  class:fullscreen-landscape={isFullscreen && screenOrientation.includes('landscape')}
   on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
   on:mousedown={handleMouseDown}
 >
@@ -520,7 +535,48 @@ function updateContainerHeight() {
   </div>
 </div>
 
+<style>
+  /* Fullscreen mobile styles */
+  .fullscreen-portrait :global(img) {
+    max-height: 100vh !important;
+    max-width: 100vw !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  
+  .fullscreen-landscape :global(img) {
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    width: auto !important;
+    height: auto !important;
+    object-fit: contain !important;
+  }
+  
+  /* Ensure fullscreen container takes full viewport */
+  .fullscreen-portrait,
+  .fullscreen-landscape {
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: black !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  
+  /* Ensure content fills available space */
+  .fullscreen-portrait :global(.image-gallery-content),
+  .fullscreen-landscape :global(.image-gallery-content) {
+    width: 100% !important;
+    height: 100% !important;
+  }
+</style>
+
 <svelte:window
   on:keydown={useWindowKeyDown ? handleKeyDown : undefined}
   on:fullscreenchange={handleScreenChange}
+  on:orientationchange={handleOrientationChange}
+  on:resize={handleOrientationChange}
 />

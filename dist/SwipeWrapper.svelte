@@ -6,8 +6,12 @@
   - swipenext
 
 -->
-<script>import { swipeable, UP, DOWN, LEFT, RIGHT } from "@react2svelte/swipeable";
+<script>import { swipeable } from "./utils/swipe";
 import { createEventDispatcher } from "svelte";
+const UP = "UP";
+const DOWN = "DOWN";
+const LEFT = "LEFT";
+const RIGHT = "RIGHT";
 let dispatch = createEventDispatcher();
 export let disableSwipe;
 export let stopPropagation;
@@ -90,9 +94,11 @@ function handleOnSwipedTo(swipeDirection, isLeftRightFlick) {
 
 <div
   class="image-gallery-swipe"
-  use:swipeable={{ delta: 0 }}
-  on:swiping={(e) => handleSwiping(e.detail)}
-  on:swiped={(e) => handleSwiped(e.detail)}
+  use:swipeable={{ 
+    delta: 0,
+    onSwiping: handleSwiping,
+    onSwiped: handleSwiped
+  }}
 >
   <slot />
 </div>

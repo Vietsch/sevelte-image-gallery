@@ -1,4 +1,4 @@
-import { SvelteComponentTyped } from "svelte";
+import { SvelteComponent } from "svelte";
 import type { TItem } from './types';
 declare const __propDef: {
     props: {
@@ -9,11 +9,11 @@ declare const __propDef: {
         showItem: boolean;
         item: TItem;
         isFullscreen: boolean;
-        src?: string | undefined;
-        alt?: string | undefined;
-        active?: boolean | undefined;
-        direction?: string | undefined;
-        containInPage?: boolean | undefined;
+        src?: string;
+        alt?: string;
+        active?: boolean;
+        direction?: string;
+        containInPage?: boolean;
     };
     events: {
         imageerror: CustomEvent<any>;
@@ -28,10 +28,12 @@ declare const __propDef: {
         [evt: string]: CustomEvent<any>;
     };
     slots: {};
+    exports?: {} | undefined;
+    bindings?: string | undefined;
 };
 export type SlideProps = typeof __propDef.props;
 export type SlideEvents = typeof __propDef.events;
 export type SlideSlots = typeof __propDef.slots;
-export default class Slide extends SvelteComponentTyped<SlideProps, SlideEvents, SlideSlots> {
+export default class Slide extends SvelteComponent<SlideProps, SlideEvents, SlideSlots> {
 }
 export {};

@@ -102,8 +102,8 @@
   const dispatch = createEventDispatcher();
 
   // Add a reactive variable to track container height
-  let containerHeight: number;
-  let parentElement: HTMLElement;
+  let containerHeight: number | undefined;
+  let parentElement: HTMLElement | null = null;
 
   // Add orientation change handling
   let screenOrientation: string = '';
@@ -370,25 +370,70 @@
   $: igContentClass = getIgContentClass(isFullscreen, thumbnailPosition);
   $: slideWrapperClass = getSlideWrapperClass(isRTL, thumbnailPosition);
 
-  onMount(async () => {
+  function keyboardFocus(node: HTMLElement, enabled: boolean) {
+    let isActive = false;
+
+    const addListeners = () => node.addEventListener('keydown', handleKeyDown);
+    const removeListeners = () => node.removeEventListener('keydown', handleKeyDown);
+
+    const enable = () => {
+      if (isActive) return;
+      node.tabIndex = 0;
+      node.setAttribute('role', 'application');
+      node.setAttribute('aria-label', 'Image gallery');
+      addListeners();
+      isActive = true;
+    };
+
+    const disable = () => {
+      if (!isActive) return;
+      node.removeAttribute('tabindex');
+      node.setAttribute('role', 'region');
+      node.removeAttribute('aria-label');
+      removeListeners();
+      isActive = false;
+    };
+
+    if (enabled) {
+      enable();
+    }
+
+    return {
+      update(isEnabled: boolean) {
+        if (isEnabled) {
+          enable();
+        } else {
+          disable();
+        }
+      },
+      destroy() {
+        disable();
+      }
+    };
+  }
+
+  onMount(() => {
     initSlideWrapperResizeObserver();
     initThumbnailWrapperResizeObserver();
     if (autoPlay) {
       _play();
     }
-    // Get parent element height on mount
-    parentElement = imageGallery.parentElement;
-    updateContainerHeight();
-    
-    // Set up resize observer to update height when parent changes
-    const resizeObserver = new ResizeObserver(() => {
+
+    parentElement = imageGallery?.parentElement ?? null;
+    let resizeObserver: ResizeObserver | null = null;
+
+    if (parentElement) {
       updateContainerHeight();
-    });
-    
-    resizeObserver.observe(parentElement);
-    
+
+      resizeObserver = new ResizeObserver(() => {
+        updateContainerHeight();
+      });
+
+      resizeObserver.observe(parentElement);
+    }
+
     return () => {
-      resizeObserver.disconnect();
+      resizeObserver?.disconnect();
     };
   });
 
@@ -441,7 +486,11 @@
     }
   };
 
-  $: onThumbnailMouseOver = (event: { detail: number }) => {
+  function handleThumbnailMouseOver(event: CustomEvent<number>) {
+    if (!slideOnThumbnailOver) {
+      return;
+    }
+
     const index = event.detail;
     if (thumbnailMouseOverTimer) {
       window.clearTimeout(thumbnailMouseOverTimer);
@@ -451,9 +500,13 @@
       slideToIndex(index);
       _pause();
     }, 300);
-  };
+  }
 
-  $: onThumbnailMouseLeave = () => {
+  function handleThumbnailMouseLeave() {
+    if (!slideOnThumbnailOver) {
+      return;
+    }
+
     if (thumbnailMouseOverTimer) {
       window.clearTimeout(thumbnailMouseOverTimer);
       thumbnailMouseOverTimer = null;
@@ -461,7 +514,7 @@
         _play();
       }
     }
-  };
+  }
 
   $: onLazyLoad = (event: { detail: number }) => {
     lazyLoaded[event.detail] = true;
@@ -491,8 +544,7 @@
   class:contain-in-page={containInPage || isFullscreen}
   class:fullscreen-portrait={isFullscreen && screenOrientation.includes('portrait')}
   class:fullscreen-landscape={isFullscreen && screenOrientation.includes('landscape')}
-  on:keydown={!useWindowKeyDown ? handleKeyDown : undefined}
-  on:mousedown={handleMouseDown}
+  use:keyboardFocus={!useWindowKeyDown}
 >
   <div class={igContentClass}>
     {#if thumbnailPosition === 'bottom' || thumbnailPosition === 'right'}
@@ -555,8 +607,8 @@
         on:slidejump={(event) => {
           slideToIndex(event.detail);
         }}
-        on:thumbnailmouseover={slideOnThumbnailOver ? onThumbnailMouseOver : undefined}
-        on:thumbnailmouseleave={slideOnThumbnailOver ? onThumbnailMouseLeave : undefined}
+        on:thumbnailmouseover={handleThumbnailMouseOver}
+        on:thumbnailmouseleave={handleThumbnailMouseLeave}
         on:imageerror={handleImageError}
       />
     {/if}
@@ -647,6 +699,7 @@
 
 <svelte:window
   on:keydown={useWindowKeyDown ? handleKeyDown : undefined}
+  on:mousedown={handleMouseDown}
   on:fullscreenchange={handleScreenChange}
   on:orientationchange={handleOrientationChange}
   on:resize={handleOrientationChange}

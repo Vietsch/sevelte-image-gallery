@@ -7,9 +7,13 @@
 
 -->
 <script lang="ts">
-  import { swipeable, UP, DOWN, LEFT, RIGHT } from '@react2svelte/swipeable';
-  import type { SwipeEventData } from '@react2svelte/swipeable';
+  import { swipeable, type SwipeEventData, type SwipeDirection } from './utils/swipe';
   import { createEventDispatcher } from 'svelte';
+
+  const UP: SwipeDirection = 'UP';
+  const DOWN: SwipeDirection = 'DOWN';
+  const LEFT: SwipeDirection = 'LEFT';
+  const RIGHT: SwipeDirection = 'RIGHT';
 
   let dispatch = createEventDispatcher();
 
@@ -117,9 +121,11 @@
 
 <div
   class="image-gallery-swipe"
-  use:swipeable={{ delta: 0 }}
-  on:swiping={(e) => handleSwiping(e.detail)}
-  on:swiped={(e) => handleSwiped(e.detail)}
+  use:swipeable={{ 
+    delta: 0,
+    onSwiping: handleSwiping,
+    onSwiped: handleSwiped
+  }}
 >
   <slot />
 </div>

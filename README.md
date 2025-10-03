@@ -1,8 +1,18 @@
-# @react2svelte/image-gallery
+# @vietsch/svelte-image-gallery
 
-[![npm version](https://img.shields.io/npm/v/@react2svelte/image-gallery.svg)](https://www.npmjs.com/package/@react2svelte/image-gallery)
+[![npm version](https://img.shields.io/npm/v/@vietsch/svelte-image-gallery.svg)](https://www.npmjs.com/package/@vietsch/svelte-image-gallery)
 
 **This is an image gallery for Svelte based on [react-image-gallery](https://github.com/xiaolin/react-image-gallery) v1.2.11. Many thanks to all the contributors of that package for their hard work!**
+
+**🚀 Version 1.2.0: Now with custom swipe implementation - no more deprecated dependencies!**
+
+## What's New in v1.2.0
+
+- ✅ **Removed deprecated dependencies**: No more `@react2svelte/swipable` or `@react2svelte/swipeable`
+- ✅ **Custom swipe implementation**: Built-in touch and mouse gesture support
+- ✅ **Better performance**: No external swipe library overhead
+- ✅ **Enhanced security**: Updated dependencies with fewer vulnerabilities
+- ✅ **Future-proof**: No dependency on external packages that may become deprecated
 
 ### Live Demo (try it on mobile for swipe support)
 
@@ -12,7 +22,7 @@ React image gallery is a React component for building image galleries and carous
 
 ## Features
 
-- [x] Mobile swipe gestures (using [@react2svelte/swipable](https://www.npmjs.com/package/@react2svelte/swipable))
+- [x] Mobile swipe gestures (custom implementation - no external dependencies!)
 - [x] Thumbnail navigation
 - [x] Fullscreen support
 - [x] RTL support
@@ -30,14 +40,14 @@ Not yet ported
 Install the library
 
 ```
-npm i @react2svelte/image-gallery
+npm i @vietsch/svelte-image-gallery
 ```
 
 Use it in your component/page
 
 ```html
 <script lang="ts">
-  import ImageGallery from '@react2svelte/image-gallery';
+  import ImageGallery from '@vietsch/svelte-image-gallery';
 
   const images = [
     {

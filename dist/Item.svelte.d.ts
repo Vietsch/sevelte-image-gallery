@@ -1,4 +1,4 @@
-import { SvelteComponentTyped } from "svelte";
+import { SvelteComponent } from "svelte";
 declare const __propDef: {
     props: {
         [x: string]: any;
@@ -22,10 +22,12 @@ declare const __propDef: {
         [evt: string]: CustomEvent<any>;
     };
     slots: {};
+    exports?: undefined;
+    bindings?: undefined;
 };
 export type ItemProps = typeof __propDef.props;
 export type ItemEvents = typeof __propDef.events;
 export type ItemSlots = typeof __propDef.slots;
-export default class Item extends SvelteComponentTyped<ItemProps, ItemEvents, ItemSlots> {
+export default class Item extends SvelteComponent<ItemProps, ItemEvents, ItemSlots> {
 }
 export {};

@@ -1,48 +1,52 @@
 {
   "name": "@vietsch/svelte-image-gallery",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "author": "Volker von Vietsch",
   "license": "MIT",
   "description": "Svelte image gallery ported from react-image-gallery",
   "homepage": "https://github.com/Vietsch/svelte-image-gallery",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Vietsch/svelte-image-gallery"
+    "url": "git+https://github.com/Vietsch/svelte-image-gallery.git"
+  },
+  "engines": {
+    "node": ">=20.19.0"
   },
   "scripts": {
     "dev": "vite dev",
     "build": "svelte-kit sync && svelte-package",
     "buildDemo": "vite build",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --use-new-transformation",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "lint": "prettier --plugin-search-dir . --check . && eslint .",
     "format": "prettier --plugin-search-dir . --write ."
   },
   "devDependencies": {
-    "@sveltejs/adapter-static": "^1.0.1",
-    "@sveltejs/kit": "^1.0.0",
-    "@sveltejs/package": "^1.0.0",
+    "@sveltejs/adapter-static": "^3.0.0",
+    "@sveltejs/kit": "^2.5.0",
+    "@sveltejs/package": "^2.3.0",
     "@types/throttle-debounce": "^5.0.0",
-    "@typescript-eslint/eslint-plugin": "^5.45.0",
-    "@typescript-eslint/parser": "^5.45.0",
-    "eslint": "^8.28.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-svelte3": "^4.0.0",
-    "prettier": "^2.8.0",
-    "prettier-plugin-svelte": "^2.8.1",
-    "sass": "^1.57.1",
-    "svelte": "^3.54.0",
-    "svelte-check": "^2.9.2",
-    "tslib": "^2.4.1",
-    "typescript": "^4.9.3",
-    "vite": "^4.0.0"
+    "@typescript-eslint/eslint-plugin": "^7.0.0",
+    "@typescript-eslint/parser": "^7.0.0",
+    "eslint": "^8.57.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.43.0",
+    "prettier": "^3.2.0",
+    "prettier-plugin-svelte": "^3.2.2",
+    "sass": "^1.74.0",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.0.0",
+    "tslib": "^2.6.2",
+    "typescript": "^5.4.0",
+    "vite": "^6.3.0"
   },
   "type": "module",
   "dependencies": {
-    "@react2svelte/swipable": "^0.1.4",
-    "@react2svelte/swipeable": "^0.1.4",
-    "clsx": "^1.2.1",
+    "clsx": "^2.0.0",
     "throttle-debounce": "^5.0.0"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
   },
   "exports": {
     ".": {

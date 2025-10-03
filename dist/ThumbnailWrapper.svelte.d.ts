@@ -1,4 +1,4 @@
-import { SvelteComponentTyped } from "svelte";
+import { SvelteComponent } from "svelte";
 import type { Position, TItem } from './types';
 declare const __propDef: {
     props: {
@@ -13,12 +13,12 @@ declare const __propDef: {
         slideDuration: number;
         swipingThumbnailTransitionDuration: number;
         gallerySlideWrapperHeight: number;
-        getElem?: (() => Element) | undefined;
-        resetSwipingThumbnail?: (() => void) | undefined;
-        handleResizeWidth?: ((newWidth: number) => void) | undefined;
-        handleResizeHeight?: ((newHeight: number) => void) | undefined;
-        slideThumbnailBar?: ((newIndex: number) => void) | undefined;
-        resetThumbnailPosition?: (() => void) | undefined;
+        getElem?: () => Element;
+        resetSwipingThumbnail?: () => void;
+        handleResizeWidth?: (newWidth: number) => void;
+        handleResizeHeight?: (newHeight: number) => void;
+        slideThumbnailBar?: (newIndex: number) => void;
+        resetThumbnailPosition?: () => void;
     };
     events: {
         slidejump: CustomEvent<any>;
@@ -29,11 +29,13 @@ declare const __propDef: {
         [evt: string]: CustomEvent<any>;
     };
     slots: {};
+    exports?: {} | undefined;
+    bindings?: string | undefined;
 };
 export type ThumbnailWrapperProps = typeof __propDef.props;
 export type ThumbnailWrapperEvents = typeof __propDef.events;
 export type ThumbnailWrapperSlots = typeof __propDef.slots;
-export default class ThumbnailWrapper extends SvelteComponentTyped<ThumbnailWrapperProps, ThumbnailWrapperEvents, ThumbnailWrapperSlots> {
+export default class ThumbnailWrapper extends SvelteComponent<ThumbnailWrapperProps, ThumbnailWrapperEvents, ThumbnailWrapperSlots> {
     get getElem(): () => Element;
     get resetSwipingThumbnail(): () => void;
     get handleResizeWidth(): (newWidth: number) => void;

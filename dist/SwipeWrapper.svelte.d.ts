@@ -1,4 +1,4 @@
-import { SvelteComponentTyped } from "svelte";
+import { SvelteComponent } from "svelte";
 declare const __propDef: {
     props: {
         disableSwipe: boolean;
@@ -22,10 +22,12 @@ declare const __propDef: {
     slots: {
         default: {};
     };
+    exports?: {} | undefined;
+    bindings?: string | undefined;
 };
 export type SwipeWrapperProps = typeof __propDef.props;
 export type SwipeWrapperEvents = typeof __propDef.events;
 export type SwipeWrapperSlots = typeof __propDef.slots;
-export default class SwipeWrapper extends SvelteComponentTyped<SwipeWrapperProps, SwipeWrapperEvents, SwipeWrapperSlots> {
+export default class SwipeWrapper extends SvelteComponent<SwipeWrapperProps, SwipeWrapperEvents, SwipeWrapperSlots> {
 }
 export {};
