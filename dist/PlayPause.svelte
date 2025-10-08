@@ -1,7 +1,10 @@
-<script>import SVG from "./SVG.svelte";
-import { createEventDispatcher } from "svelte";
-export let isPlaying;
-const dispatch = createEventDispatcher();
+<script lang="ts">
+  import SVG from './SVG.svelte';
+  import { createEventDispatcher } from 'svelte';
+
+  export let isPlaying: boolean;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <button

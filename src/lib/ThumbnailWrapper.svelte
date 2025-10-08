@@ -69,6 +69,11 @@
   }
 
   function handleResize() {
+    // Guard against undefined items
+    if (!items || !thumbnails) {
+      return;
+    }
+    
     // Adjust thumbnail container when thumbnail width or height is adjusted
     thumbsTranslate = getThumbsTranslate(
       thumbnails,
@@ -84,6 +89,11 @@
   }
 
   export function slideThumbnailBar(newIndex: number) {
+    // Guard against undefined items
+    if (!items || !thumbnails) {
+      return;
+    }
+    
     const nextTranslate = -getThumbsTranslate(
       thumbnails,
       newIndex,
@@ -113,9 +123,9 @@
     return '';
   };
 
-  $: igThumbnailClasses = items.map((item, index) =>
+  $: igThumbnailClasses = items ? items.map((item, index) =>
     getIgThumbnailClass(index, currentIndex, item.thumbnailClass)
-  );
+  ) : [];
 
   const dispatch = createEventDispatcher();
 
@@ -158,7 +168,7 @@
       <!-- These HTML ids are used to determine the width and height of the elements from another
       component.
       -->
-      {#each items as item, index}
+      {#each items || [] as item, index}
         <Thumbnail
           {index}
           {currentIndex}

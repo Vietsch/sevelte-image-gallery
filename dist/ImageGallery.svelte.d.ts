@@ -1,81 +1,84 @@
-import { SvelteComponent } from "svelte";
 import './app.css';
 import type { Position, TItem } from './types';
-declare const __propDef: {
-    props: {
-        flickThreshold?: number;
-        items: TItem[];
-        showNav?: boolean;
-        autoPlay?: boolean;
-        lazyLoad?: boolean;
-        infinite?: boolean;
-        showIndex?: boolean;
-        showBullets?: boolean;
-        showThumbnails?: boolean;
-        showPlayButton?: boolean;
-        showFullscreenButton?: boolean;
-        disableThumbnailScroll?: boolean;
-        disableKeyDown?: boolean;
-        disableSwipe?: boolean;
-        disableThumbnailSwipe?: boolean;
-        useBrowserFullscreen?: boolean;
-        onErrorImageURL?: string | undefined;
-        indexSeparator?: string;
-        thumbnailPosition?: Position;
-        startIndex?: number;
-        slideDuration?: number;
-        slideInterval?: number;
-        slideOnThumbnailOver?: boolean;
-        swipeThreshold?: number;
-        swipingTransitionDuration?: number;
-        swipingThumbnailTransitionDuration?: number;
-        /** TODO
-          export let onClick: Function = null;
-          export let onTouchMove: Function = null;
-          export let onTouchEnd: Function = null;
-          export let onTouchStart: Function = null;
-          export let onMouseOver: Function = null;
-          export let onMouseLeave: Function = null;
-          export let onThumbnailError: Function = null;
-          export let onThumbnailClick: Function = null;
-          */ stopPropagation?: boolean;
-        additionalClass?: string;
-        useTranslate3D?: boolean;
-        isRTL?: boolean;
-        useWindowKeyDown?: boolean;
-        containInPage?: boolean;
-        slideToIndex?: (index: number) => void;
-        play?: () => void;
-        pause?: () => void;
-        fullScreen?: () => void;
-        exitFullScreen?: () => void;
-        getCurrentIndex?: () => number;
+interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
+    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
+        $$bindings?: Bindings;
+    } & Exports;
+    (internal: unknown, props: Props & {
+        $$events?: Events;
+        $$slots?: Slots;
+    }): Exports & {
+        $set?: any;
+        $on?: any;
     };
-    events: {
-        click: CustomEvent<any>;
-        beforeslide: CustomEvent<any>;
-        slide: CustomEvent<any>;
-        play: CustomEvent<any>;
-        pause: CustomEvent<any>;
-        screenchange: CustomEvent<any>;
-        imageload: CustomEvent<any>;
-        imageerror: CustomEvent<any>;
-    } & {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-    exports?: {} | undefined;
-    bindings?: string | undefined;
-};
-export type ImageGalleryProps = typeof __propDef.props;
-export type ImageGalleryEvents = typeof __propDef.events;
-export type ImageGallerySlots = typeof __propDef.slots;
-export default class ImageGallery extends SvelteComponent<ImageGalleryProps, ImageGalleryEvents, ImageGallerySlots> {
-    get slideToIndex(): (index: number) => void;
-    get play(): () => void;
-    get pause(): () => void;
-    get fullScreen(): () => void;
-    get exitFullScreen(): () => void;
-    get getCurrentIndex(): () => number;
+    z_$$bindings?: Bindings;
 }
-export {};
+declare const ImageGallery: $$__sveltets_2_IsomorphicComponent<{
+    flickThreshold?: number;
+    items: TItem[];
+    showNav?: boolean;
+    autoPlay?: boolean;
+    lazyLoad?: boolean;
+    infinite?: boolean;
+    showIndex?: boolean;
+    showBullets?: boolean;
+    showThumbnails?: boolean;
+    showPlayButton?: boolean;
+    showFullscreenButton?: boolean;
+    disableThumbnailScroll?: boolean;
+    disableKeyDown?: boolean;
+    disableSwipe?: boolean;
+    disableThumbnailSwipe?: boolean;
+    useBrowserFullscreen?: boolean;
+    onErrorImageURL?: string | undefined;
+    indexSeparator?: string;
+    thumbnailPosition?: Position;
+    startIndex?: number;
+    slideDuration?: number;
+    slideInterval?: number;
+    slideOnThumbnailOver?: boolean;
+    swipeThreshold?: number;
+    swipingTransitionDuration?: number;
+    swipingThumbnailTransitionDuration?: number;
+    /** TODO
+      export let onClick: Function = null;
+      export let onTouchMove: Function = null;
+      export let onTouchEnd: Function = null;
+      export let onTouchStart: Function = null;
+      export let onMouseOver: Function = null;
+      export let onMouseLeave: Function = null;
+      export let onThumbnailError: Function = null;
+      export let onThumbnailClick: Function = null;
+      */ stopPropagation?: boolean;
+    additionalClass?: string;
+    useTranslate3D?: boolean;
+    isRTL?: boolean;
+    useWindowKeyDown?: boolean;
+    containInPage?: boolean;
+    slideToIndex?: (index: number) => void;
+    play?: () => void;
+    pause?: () => void;
+    fullScreen?: () => void;
+    exitFullScreen?: () => void;
+    getCurrentIndex?: () => number;
+}, {
+    click: CustomEvent<any>;
+    beforeslide: CustomEvent<any>;
+    slide: CustomEvent<any>;
+    play: CustomEvent<any>;
+    pause: CustomEvent<any>;
+    screenchange: CustomEvent<any>;
+    imageload: CustomEvent<any>;
+    imageerror: CustomEvent<any>;
+} & {
+    [evt: string]: CustomEvent<any>;
+}, {}, {
+    slideToIndex: (index: number) => void;
+    play: () => void;
+    pause: () => void;
+    fullScreen: () => void;
+    exitFullScreen: () => void;
+    getCurrentIndex: () => number;
+}, string>;
+type ImageGallery = InstanceType<typeof ImageGallery>;
+export default ImageGallery;

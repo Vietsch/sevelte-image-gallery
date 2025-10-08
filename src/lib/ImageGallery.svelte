@@ -446,6 +446,9 @@
       debounce(50, (entries: ResizeObserverEntry[]) => {
         if (!entries) return;
         entries.forEach((entry) => {
+          if (!thumbnailWrapper) {
+            return;
+          }
           thumbnailWrapper.handleResizeWidth(entry.contentRect.width);
           handleResize();
         });
@@ -462,6 +465,9 @@
       debounce(50, (entries: ResizeObserverEntry[]) => {
         if (!entries) return;
         entries.forEach((entry) => {
+          if (!thumbnailWrapper) {
+            return;
+          }
           thumbnailWrapper.handleResizeHeight(entry.contentRect.height);
           handleResize();
         });

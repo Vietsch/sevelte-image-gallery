@@ -1,8 +1,11 @@
-<script>import { createEventDispatcher } from "svelte";
-export let igBulletClass;
-export let currentIndex;
-export let index;
-const dispatch = createEventDispatcher();
+<script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+
+  export let igBulletClass: string;
+  export let currentIndex: number;
+  export let index: number;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <button
@@ -11,4 +14,4 @@ const dispatch = createEventDispatcher();
   on:click={(event) => dispatch('click', event)}
   aria-pressed={currentIndex === index}
   aria-label={`Go to Slide ${index + 1}`}
-/>
+></button>

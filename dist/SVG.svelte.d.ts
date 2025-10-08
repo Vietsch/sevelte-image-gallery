@@ -1,20 +1,22 @@
-import { SvelteComponent } from "svelte";
-declare const __propDef: {
-    props: {
-        strokeWidth?: number;
-        viewBox?: string;
-        icon: "left" | "right" | "maximize" | "minimize" | "play" | "pause";
+interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
+    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
+        $$bindings?: Bindings;
+    } & Exports;
+    (internal: unknown, props: Props & {
+        $$events?: Events;
+        $$slots?: Slots;
+    }): Exports & {
+        $set?: any;
+        $on?: any;
     };
-    events: {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-    exports?: {} | undefined;
-    bindings?: string | undefined;
-};
-export type SvgProps = typeof __propDef.props;
-export type SvgEvents = typeof __propDef.events;
-export type SvgSlots = typeof __propDef.slots;
-export default class Svg extends SvelteComponent<SvgProps, SvgEvents, SvgSlots> {
+    z_$$bindings?: Bindings;
 }
-export {};
+declare const SVG: $$__sveltets_2_IsomorphicComponent<{
+    strokeWidth?: number;
+    viewBox?: string;
+    icon: "left" | "right" | "maximize" | "minimize" | "play" | "pause";
+}, {
+    [evt: string]: CustomEvent<any>;
+}, {}, {}, string>;
+type SVG = InstanceType<typeof SVG>;
+export default SVG;

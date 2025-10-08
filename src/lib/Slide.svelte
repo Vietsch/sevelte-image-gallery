@@ -10,8 +10,6 @@
   export let showItem: boolean;
   export let item: TItem;
   export let isFullscreen: boolean;
-  export let active = false;
-  export let direction = '';
   export let containInPage: boolean = false;
 
   const dispatch = createEventDispatcher();
@@ -28,9 +26,13 @@
     }
   }
 
-  function handleImageLoad(event: Event) {
-    const img = event.target as HTMLImageElement;
-    isPortrait = img.naturalHeight > img.naturalWidth;
+  function handleImageLoad(event: CustomEvent<Event>) {
+    const loadEvent = event.detail as Event | undefined;
+    const target = (loadEvent?.target ?? event.target) as EventTarget | null;
+    if (!(target instanceof HTMLImageElement)) {
+      return;
+    }
+    isPortrait = target.naturalHeight > target.naturalWidth;
   }
 </script>
 
@@ -48,9 +50,6 @@
   on:focus={() => dispatch('focus')}
   on:mouseleave={() => dispatch('mouseleave')}
   role="button"
-  class:active
-  class:slide-next={active && direction === 'next'}
-  class:slide-prev={active && direction === 'prev'}
   class:portrait={isPortrait}
   class:landscape={!isPortrait}
 >
@@ -77,55 +76,6 @@
 </div>
 
 <style>
-  .image-gallery-slide {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 0.5s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .image-gallery-slide.active {
-    opacity: 1;
-  }
-
-  .image-gallery-slide.slide-next {
-    animation: slideFromRight 0.5s ease;
-  }
-
-  .image-gallery-slide.slide-prev {
-    animation: slideFromLeft 0.5s ease;
-  }
-
-  @keyframes slideFromRight {
-    from { transform: translateX(100%); }
-    to { transform: translateX(0); }
-  }
-
-  @keyframes slideFromLeft {
-    from { transform: translateX(-100%); }
-    to { transform: translateX(0); }
-  }
-
-  :global(.image-gallery-slide .image-gallery-image) {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
-
-  :global(.image-gallery-slide .image-gallery-image.contain) {
-    object-fit: contain;
-    height: auto;
-    width: auto;
-    max-height: 100%;
-    max-width: 100%;
-  }
-
   /* Portrait specific handling */
   .portrait :global(.image-gallery-image.contain) {
     max-height: 100%;

@@ -1,20 +1,22 @@
-import { SvelteComponent } from "svelte";
-declare const __propDef: {
-    props: {
-        isFullscreen: boolean;
+interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
+    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
+        $$bindings?: Bindings;
+    } & Exports;
+    (internal: unknown, props: Props & {
+        $$events?: Events;
+        $$slots?: Slots;
+    }): Exports & {
+        $set?: any;
+        $on?: any;
     };
-    events: {
-        click: CustomEvent<any>;
-    } & {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-    exports?: {} | undefined;
-    bindings?: string | undefined;
-};
-export type FullscreenProps = typeof __propDef.props;
-export type FullscreenEvents = typeof __propDef.events;
-export type FullscreenSlots = typeof __propDef.slots;
-export default class Fullscreen extends SvelteComponent<FullscreenProps, FullscreenEvents, FullscreenSlots> {
+    z_$$bindings?: Bindings;
 }
-export {};
+declare const Fullscreen: $$__sveltets_2_IsomorphicComponent<{
+    isFullscreen: boolean;
+}, {
+    click: CustomEvent<any>;
+} & {
+    [evt: string]: CustomEvent<any>;
+}, {}, {}, string>;
+type Fullscreen = InstanceType<typeof Fullscreen>;
+export default Fullscreen;

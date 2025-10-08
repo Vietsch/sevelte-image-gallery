@@ -1,10 +1,14 @@
-<script>import { createEventDispatcher } from "svelte";
-export let index;
-export let currentIndex;
-export let igThumbnailClass;
-export let item;
-``;
-const dispatch = createEventDispatcher();
+<script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+  import type { TItem } from './types';
+
+  export let index: number;
+  export let currentIndex: number;
+  export let igThumbnailClass: string;
+  export let item: TItem;
+  ``;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <button

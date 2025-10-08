@@ -1,29 +1,31 @@
-import { SvelteComponent } from "svelte";
 import type { TItem } from './types';
-declare const __propDef: {
-    props: {
-        index: number;
-        currentIndex: number;
-        igThumbnailClass: string;
-        item: TItem;
+interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
+    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
+        $$bindings?: Bindings;
+    } & Exports;
+    (internal: unknown, props: Props & {
+        $$events?: Events;
+        $$slots?: Slots;
+    }): Exports & {
+        $set?: any;
+        $on?: any;
     };
-    events: {
-        mouseleave: CustomEvent<any>;
-        mouseover: CustomEvent<any>;
-        focus: CustomEvent<any>;
-        keyup: CustomEvent<any>;
-        click: CustomEvent<any>;
-        imageerror: CustomEvent<any>;
-    } & {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-    exports?: {} | undefined;
-    bindings?: string | undefined;
-};
-export type ThumbnailProps = typeof __propDef.props;
-export type ThumbnailEvents = typeof __propDef.events;
-export type ThumbnailSlots = typeof __propDef.slots;
-export default class Thumbnail extends SvelteComponent<ThumbnailProps, ThumbnailEvents, ThumbnailSlots> {
+    z_$$bindings?: Bindings;
 }
-export {};
+declare const Thumbnail: $$__sveltets_2_IsomorphicComponent<{
+    index: number;
+    currentIndex: number;
+    igThumbnailClass: string;
+    item: TItem;
+}, {
+    mouseleave: CustomEvent<any>;
+    mouseover: CustomEvent<any>;
+    focus: CustomEvent<any>;
+    keyup: CustomEvent<any>;
+    click: CustomEvent<any>;
+    imageerror: CustomEvent<any>;
+} & {
+    [evt: string]: CustomEvent<any>;
+}, {}, {}, string>;
+type Thumbnail = InstanceType<typeof Thumbnail>;
+export default Thumbnail;

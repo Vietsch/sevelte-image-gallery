@@ -1,20 +1,22 @@
-import { SvelteComponent } from "svelte";
-declare const __propDef: {
-    props: {
-        disabled: boolean;
+interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
+    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
+        $$bindings?: Bindings;
+    } & Exports;
+    (internal: unknown, props: Props & {
+        $$events?: Events;
+        $$slots?: Slots;
+    }): Exports & {
+        $set?: any;
+        $on?: any;
     };
-    events: {
-        click: CustomEvent<any>;
-    } & {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-    exports?: {} | undefined;
-    bindings?: string | undefined;
-};
-export type LeftNavProps = typeof __propDef.props;
-export type LeftNavEvents = typeof __propDef.events;
-export type LeftNavSlots = typeof __propDef.slots;
-export default class LeftNav extends SvelteComponent<LeftNavProps, LeftNavEvents, LeftNavSlots> {
+    z_$$bindings?: Bindings;
 }
-export {};
+declare const LeftNav: $$__sveltets_2_IsomorphicComponent<{
+    disabled: boolean;
+}, {
+    click: CustomEvent<any>;
+} & {
+    [evt: string]: CustomEvent<any>;
+}, {}, {}, string>;
+type LeftNav = InstanceType<typeof LeftNav>;
+export default LeftNav;

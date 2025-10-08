@@ -1,88 +1,115 @@
-<script>import LeftNav from "./LeftNav.svelte";
-import RightNav from "./RightNav.svelte";
-import { createEventDispatcher } from "svelte";
-import Slide from "./Slide.svelte";
-import Bullet from "./Bullet.svelte";
-import Fullscreen from "./Fullscreen.svelte";
-import PlayPause from "./PlayPause.svelte";
-import SwipeWrapper from "./SwipeWrapper.svelte";
-import { getAlignmentClassName, getBulletStyle, getSlideStyle } from "./styling";
-export let slideWrapperClass;
-export let items;
-export let showNav;
-export let showBullets;
-export let showIndex;
-export let previousIndex;
-export let currentIndex;
-export let isTransitioning;
-export let infinite;
-export let isRTL;
-export let isPlaying;
-export let showPlayButton;
-export let isFullscreen;
-export let showFullscreenButton;
-export let disableSwipe;
-export let stopPropagation;
-export let currentSlideOffset;
-export let galleryWidth;
-export let indexSeparator;
-export let lazyLoad;
-export let lazyLoaded;
-export let swipeThreshold;
-export let flickThreshold;
-export let transitionStyle;
-export let swipingTransitionStyle;
-export let useTranslate3D;
-export let containInPage = false;
-let isSwiping = false;
-$:
-  currentTransitionStyle = isSwiping ? swipingTransitionStyle : transitionStyle;
-$:
-  canSlide = items.length >= 2;
-$:
-  canSlidePrevious = currentIndex > 0;
-$:
-  canSlideNext = currentIndex < items.length - 1;
-$:
-  canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
-$:
-  canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
-let elem;
-export function getElem() {
-  return elem;
-}
-const dispatch = createEventDispatcher();
-$:
-  slideIsTransitioning = (index) => {
+<script lang="ts">
+  import type { TItem } from './types';
+  import LeftNav from './LeftNav.svelte';
+  import RightNav from './RightNav.svelte';
+  import { createEventDispatcher } from 'svelte';
+  import Slide from './Slide.svelte';
+  import Bullet from './Bullet.svelte';
+  import Fullscreen from './Fullscreen.svelte';
+  import PlayPause from './PlayPause.svelte';
+  import SwipeWrapper from './SwipeWrapper.svelte';
+  import { getAlignmentClassName, getBulletStyle, getSlideStyle } from './styling';
+
+  // settings
+  export let slideWrapperClass: string;
+  export let items: TItem[];
+  export let showNav: boolean;
+  export let showBullets: boolean;
+  export let showIndex: boolean;
+  export let previousIndex: number;
+  export let currentIndex: number;
+  export let isTransitioning: boolean;
+  export let infinite: boolean;
+  export let isRTL: boolean;
+  export let isPlaying: boolean;
+  export let showPlayButton: boolean;
+  export let isFullscreen: boolean;
+  export let showFullscreenButton: boolean;
+  export let disableSwipe: boolean;
+  export let stopPropagation: boolean;
+  export let currentSlideOffset: number;
+  export let galleryWidth: number;
+  export let indexSeparator: string;
+  export let lazyLoad: boolean;
+  export let lazyLoaded: boolean[];
+  export let swipeThreshold: number;
+  export let flickThreshold: number;
+  export let transitionStyle: string; // how should transitions be made? CSS, i.e. 'transform 450ms ease-out'
+  export let swipingTransitionStyle: string;
+  export let useTranslate3D: boolean;
+  export let containInPage: boolean = false;
+
+  let isSwiping = false;
+  $: currentTransitionStyle = isSwiping ? swipingTransitionStyle : transitionStyle;
+
+  $: canSlide = items.length >= 2;
+  $: canSlidePrevious = currentIndex > 0;
+  $: canSlideNext = currentIndex < items.length - 1;
+  $: canSlideLeft = infinite || (isRTL ? canSlideNext : canSlidePrevious);
+  $: canSlideRight = infinite || (isRTL ? canSlidePrevious : canSlideNext);
+
+  // the element of this wrapper, useful to observe resize changes
+  let elem: HTMLElement;
+
+  export function getElem() {
+    return elem;
+  }
+
+  const dispatch = createEventDispatcher();
+
+  $: slideIsTransitioning = (index: number) => {
+    /*
+    returns true if the gallery is transitioning and the index is not the
+    previous or currentIndex
+    */
     const indexIsNotPreviousOrNextSlide = !(index === previousIndex || index === currentIndex);
     return isTransitioning && indexIsNotPreviousOrNextSlide;
   };
-$:
-  ignoreIsTransitioning = () => {
+
+  $: ignoreIsTransitioning = () => {
+    /*
+      Ignore isTransitioning because were not going to sibling slides
+      e.g. center to left or center to right
+    */
     const totalSlides = items.length - 1;
+
+    // we want to show the in between slides transition
     const slidingMoreThanOneSlideLeftOrRight = Math.abs(previousIndex - currentIndex) > 1;
     const notGoingFromFirstToLast = !(previousIndex === 0 && currentIndex === totalSlides);
     const notGoingFromLastToFirst = !(previousIndex === totalSlides && currentIndex === 0);
+
     return slidingMoreThanOneSlideLeftOrRight && notGoingFromFirstToLast && notGoingFromLastToFirst;
   };
-$:
-  isFirstOrLastSlide = (index) => {
+
+  $: isFirstOrLastSlide = (index: number) => {
     const totalSlides = items.length - 1;
     const isLastSlide = index === totalSlides;
     const isFirstSlide = index === 0;
     return isLastSlide || isFirstSlide;
   };
-$:
-  isSlideVisible = (index) => {
-    return !slideIsTransitioning(index) || ignoreIsTransitioning() && !isFirstOrLastSlide(index);
+
+  $: isSlideVisible = (index: number) => {
+    /*
+      Show slide if slide is the current slide and the next slide
+      OR
+      The slide is going more than one slide left or right, but not going from
+      first to last and not going from last to first
+
+      Edge case:
+      If you go to the first or last slide, when they're
+      not left, or right of each other they will try to catch up in the background
+      so unless were going from first to last or vice versa we don't want the first
+      or last slide to show up during the transition
+    */
+    return !slideIsTransitioning(index) || (ignoreIsTransitioning() && !isFirstOrLastSlide(index));
   };
-$:
-  alignmentClasses = items.map(
-    (_, index) => getAlignmentClassName(index, currentIndex, infinite, items.length)
+
+  $: alignmentClasses = items.map((_, index) =>
+    getAlignmentClassName(index, currentIndex, infinite, items.length)
   );
-$:
-  slideStyles = items.map(
-    (_, index) => getSlideStyle(
+
+  $: slideStyles = items.map((_, index) =>
+    getSlideStyle(
       index,
       currentIndex,
       previousIndex,
@@ -95,15 +122,15 @@ $:
       useTranslate3D
     )
   );
-$:
-  bulletStyles = items.map(
-    (item, index) => getBulletStyle(index, currentIndex, item.bulletClass)
+
+  $: bulletStyles = items.map((item, index) =>
+    getBulletStyle(index, currentIndex, item.bulletClass)
   );
-$:
-  showItems = items.map((_, index) => {
+
+  $: showItems = items.map((_, index) => {
     const showItem = !lazyLoad || !!alignmentClasses[index] || lazyLoaded[index];
     if (showItem && lazyLoad && !lazyLoaded[index]) {
-      dispatch("lazyload", index);
+      dispatch('lazyload', index);
     }
     return showItem;
   });

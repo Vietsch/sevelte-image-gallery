@@ -1,39 +1,37 @@
-import { SvelteComponent } from "svelte";
 import type { TItem } from './types';
-declare const __propDef: {
-    props: {
-        index: number;
-        alignment: string;
-        originalClass: string | undefined;
-        slideStyle: string;
-        showItem: boolean;
-        item: TItem;
-        isFullscreen: boolean;
-        src?: string;
-        alt?: string;
-        active?: boolean;
-        direction?: string;
-        containInPage?: boolean;
+interface $$__sveltets_2_IsomorphicComponent<Props extends Record<string, any> = any, Events extends Record<string, any> = any, Slots extends Record<string, any> = any, Exports = {}, Bindings = string> {
+    new (options: import('svelte').ComponentConstructorOptions<Props>): import('svelte').SvelteComponent<Props, Events, Slots> & {
+        $$bindings?: Bindings;
+    } & Exports;
+    (internal: unknown, props: Props & {
+        $$events?: Events;
+        $$slots?: Slots;
+    }): Exports & {
+        $set?: any;
+        $on?: any;
     };
-    events: {
-        imageerror: CustomEvent<any>;
-        click: CustomEvent<any>;
-        touchmove: CustomEvent<any>;
-        touchend: CustomEvent<any>;
-        touchstart: CustomEvent<any>;
-        mouseover: CustomEvent<any>;
-        focus: CustomEvent<any>;
-        mouseleave: CustomEvent<any>;
-    } & {
-        [evt: string]: CustomEvent<any>;
-    };
-    slots: {};
-    exports?: {} | undefined;
-    bindings?: string | undefined;
-};
-export type SlideProps = typeof __propDef.props;
-export type SlideEvents = typeof __propDef.events;
-export type SlideSlots = typeof __propDef.slots;
-export default class Slide extends SvelteComponent<SlideProps, SlideEvents, SlideSlots> {
+    z_$$bindings?: Bindings;
 }
-export {};
+declare const Slide: $$__sveltets_2_IsomorphicComponent<{
+    index: number;
+    alignment: string;
+    originalClass: string | undefined;
+    slideStyle: string;
+    showItem: boolean;
+    item: TItem;
+    isFullscreen: boolean;
+    containInPage?: boolean;
+}, {
+    imageerror: CustomEvent<any>;
+    click: CustomEvent<any>;
+    touchmove: CustomEvent<any>;
+    touchend: CustomEvent<any>;
+    touchstart: CustomEvent<any>;
+    mouseover: CustomEvent<any>;
+    focus: CustomEvent<any>;
+    mouseleave: CustomEvent<any>;
+} & {
+    [evt: string]: CustomEvent<any>;
+}, {}, {}, string>;
+type Slide = InstanceType<typeof Slide>;
+export default Slide;

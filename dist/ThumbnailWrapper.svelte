@@ -1,106 +1,140 @@
-<script>import Thumbnail from "./Thumbnail.svelte";
-import { createEventDispatcher } from "svelte";
-import { getIgThumbnailClass, getThumbnailStyle, getThumbsTranslate } from "./styling";
-import ThumbnailSwipeWrapper from "./ThumbnailSwipeWrapper.svelte";
-export let items;
-export let currentIndex;
-export let useTranslate3D;
-export let isRTL;
-export let thumbnailPosition;
-export let stopPropagation;
-export let disableThumbnailScroll;
-export let disableThumbnailSwipe;
-export let slideDuration;
-export let swipingThumbnailTransitionDuration;
-export let gallerySlideWrapperHeight;
-let isSwipingThumbnail = false;
-let isSwipedThumbnail = false;
-export function getElem() {
-  return elem;
-}
-let elem;
-let thumbnails;
-let thumbnailsWrapperWidth;
-let thumbnailsWrapperHeight;
-let thumbsElementScrollHeight;
-let thumbsElementScrollWidth;
-$:
-  isThumbnailVertical = thumbnailPosition === "left" || thumbnailPosition === "right";
-let thumbsTranslate = 0;
-let thumbsSwipedTranslate = 0;
-$:
-  thumbsStyle = `transition: all ${isSwipingThumbnail ? swipingThumbnailTransitionDuration : slideDuration}ms ease-out;`;
-$:
-  thumbnailStyle = getThumbnailStyle(
+<script lang="ts">
+  import type { Position, TItem } from './types';
+  import Thumbnail from './Thumbnail.svelte';
+  import { createEventDispatcher } from 'svelte';
+  import { getIgThumbnailClass, getThumbnailStyle, getThumbsTranslate } from './styling';
+  import ThumbnailSwipeWrapper from './ThumbnailSwipeWrapper.svelte';
+
+  // settings
+  export let items: TItem[];
+  export let currentIndex: number;
+  export let useTranslate3D: boolean;
+  export let isRTL: boolean;
+  export let thumbnailPosition: Position;
+  export let stopPropagation: boolean;
+  export let disableThumbnailScroll: boolean;
+  export let disableThumbnailSwipe: boolean;
+
+  export let slideDuration: number;
+  export let swipingThumbnailTransitionDuration: number;
+  export let gallerySlideWrapperHeight: number;
+
+  let isSwipingThumbnail = false; // currently swiping?
+  let isSwipedThumbnail = false; // swiped? relevant for auto-play
+
+  export function getElem() {
+    return elem;
+  }
+
+  // the root element
+  let elem: Element;
+  // the thumbnails container element
+  let thumbnails: HTMLElement;
+
+  let thumbnailsWrapperWidth: number;
+  let thumbnailsWrapperHeight: number;
+
+  let thumbsElementScrollHeight: number;
+  let thumbsElementScrollWidth: number;
+
+  $: isThumbnailVertical = thumbnailPosition === 'left' || thumbnailPosition === 'right';
+
+  let thumbsTranslate = 0;
+  let thumbsSwipedTranslate = 0;
+
+  $: thumbsStyle = `transition: all ${
+    isSwipingThumbnail ? swipingThumbnailTransitionDuration : slideDuration
+  }ms ease-out;`;
+
+  $: thumbnailStyle = getThumbnailStyle(
     isRTL,
     thumbsTranslate,
     isThumbnailVertical,
     useTranslate3D,
     thumbsStyle
   );
-export function resetSwipingThumbnail() {
-  isSwipedThumbnail = false;
-}
-export function handleResizeWidth(newWidth) {
-  thumbnailsWrapperWidth = newWidth;
-  handleResize();
-}
-export function handleResizeHeight(newHeight) {
-  thumbnailsWrapperHeight = newHeight;
-  handleResize();
-}
-function handleResize() {
-  thumbsTranslate = getThumbsTranslate(
-    thumbnails,
-    currentIndex,
-    disableThumbnailScroll,
-    thumbnailsWrapperWidth,
-    thumbnailsWrapperHeight,
-    isThumbnailVertical,
-    items.length
-  );
-  thumbsElementScrollWidth = thumbnails.scrollWidth;
-  thumbsElementScrollHeight = thumbnails.scrollHeight;
-}
-export function slideThumbnailBar(newIndex) {
-  const nextTranslate = -getThumbsTranslate(
-    thumbnails,
-    newIndex,
-    disableThumbnailScroll,
-    thumbnailsWrapperWidth,
-    thumbnailsWrapperHeight,
-    isThumbnailVertical,
-    items.length
-  );
-  if (isSwipedThumbnail) {
-    return;
+
+  export function resetSwipingThumbnail() {
+    isSwipedThumbnail = false;
   }
-  if (newIndex === 0) {
-    thumbsTranslate = 0;
-    thumbsSwipedTranslate = 0;
-  } else {
-    thumbsTranslate = nextTranslate;
-    thumbsSwipedTranslate = nextTranslate;
+
+  export function handleResizeWidth(newWidth: number) {
+    thumbnailsWrapperWidth = newWidth;
+    handleResize();
   }
-}
-$:
-  getThumbnailBarHeight = () => {
+
+  export function handleResizeHeight(newHeight: number) {
+    thumbnailsWrapperHeight = newHeight;
+    handleResize();
+  }
+
+  function handleResize() {
+    // Guard against undefined items
+    if (!items || !thumbnails) {
+      return;
+    }
+    
+    // Adjust thumbnail container when thumbnail width or height is adjusted
+    thumbsTranslate = getThumbsTranslate(
+      thumbnails,
+      currentIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
+    thumbsElementScrollWidth = thumbnails.scrollWidth;
+    thumbsElementScrollHeight = thumbnails.scrollHeight;
+  }
+
+  export function slideThumbnailBar(newIndex: number) {
+    // Guard against undefined items
+    if (!items || !thumbnails) {
+      return;
+    }
+    
+    const nextTranslate = -getThumbsTranslate(
+      thumbnails,
+      newIndex,
+      disableThumbnailScroll,
+      thumbnailsWrapperWidth,
+      thumbnailsWrapperHeight,
+      isThumbnailVertical,
+      items.length
+    );
+    if (isSwipedThumbnail) {
+      return;
+    }
+
+    if (newIndex === 0) {
+      thumbsTranslate = 0;
+      thumbsSwipedTranslate = 0;
+    } else {
+      thumbsTranslate = nextTranslate;
+      thumbsSwipedTranslate = nextTranslate;
+    }
+  }
+
+  $: getThumbnailBarHeight = () => {
     if (isThumbnailVertical) {
       return `height: ${gallerySlideWrapperHeight}px;`;
     }
-    return "";
+    return '';
   };
-$:
-  igThumbnailClasses = items.map(
-    (item, index) => getIgThumbnailClass(index, currentIndex, item.thumbnailClass)
-  );
-const dispatch = createEventDispatcher();
-export function resetThumbnailPosition() {
-  if (thumbnails) {
-    thumbsTranslate = 0;
-    thumbsSwipedTranslate = 0;
+
+  $: igThumbnailClasses = items ? items.map((item, index) =>
+    getIgThumbnailClass(index, currentIndex, item.thumbnailClass)
+  ) : [];
+
+  const dispatch = createEventDispatcher();
+
+  export function resetThumbnailPosition() {
+    if (thumbnails) {
+      thumbsTranslate = 0;
+      thumbsSwipedTranslate = 0;
+    }
   }
-}
 </script>
 
 <ThumbnailSwipeWrapper
@@ -134,7 +168,7 @@ export function resetThumbnailPosition() {
       <!-- These HTML ids are used to determine the width and height of the elements from another
       component.
       -->
-      {#each items as item, index}
+      {#each items || [] as item, index}
         <Thumbnail
           {index}
           {currentIndex}

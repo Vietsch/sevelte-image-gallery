@@ -3,110 +3,138 @@
   - thumbnailswiped
   - thumbsslideoffset
 -->
-<script>import { swipeable } from "./utils/swipe";
-import { createEventDispatcher } from "svelte";
-import clsx from "clsx";
-import { getThumbnailPositionClassName } from "./styling";
-const UP = "UP";
-const DOWN = "DOWN";
-const LEFT = "LEFT";
-const RIGHT = "RIGHT";
-let dispatch = createEventDispatcher();
-export let disableThumbnailSwipe;
-export let stopPropagation;
-export let isThumbnailVertical;
-export let thumbnailPosition;
-export let isRTL;
-export let thumbnailsWrapperHeight;
-export let thumbnailsWrapperWidth;
-export let thumbsElementScrollHeight;
-export let thumbsElementScrollWidth;
-let swipingUpDown;
-let swipingLeftRight;
-export let thumbsSwipedTranslate;
-function resetSwipingDirection() {
-  if (swipingUpDown) {
-    swipingUpDown = false;
+<script lang="ts">
+  import { swipeable, type SwipeEventData, type SwipeDirection } from './utils/swipe';
+  import { createEventDispatcher } from 'svelte';
+  import clsx from 'clsx';
+  import { getThumbnailPositionClassName } from './styling';
+  import type { Position } from './types';
+
+  const UP: SwipeDirection = 'UP';
+  const DOWN: SwipeDirection = 'DOWN';
+  const LEFT: SwipeDirection = 'LEFT';
+  const RIGHT: SwipeDirection = 'RIGHT';
+
+  let dispatch = createEventDispatcher();
+
+  // props
+  export let disableThumbnailSwipe: boolean;
+  export let stopPropagation: boolean;
+  export let isThumbnailVertical: boolean;
+  export let thumbnailPosition: Position;
+  export let isRTL: boolean;
+
+  export let thumbnailsWrapperHeight: number;
+  export let thumbnailsWrapperWidth: number;
+  export let thumbsElementScrollHeight: number;
+  export let thumbsElementScrollWidth: number;
+
+  let swipingUpDown: boolean;
+  let swipingLeftRight: boolean;
+
+  export let thumbsSwipedTranslate: number;
+
+  function resetSwipingDirection() {
+    if (swipingUpDown) {
+      // user stopped swipingUpDown, reset
+      swipingUpDown = false;
+    }
+
+    if (swipingLeftRight) {
+      // user stopped swipingLeftRight, reset
+      swipingLeftRight = false;
+    }
   }
-  if (swipingLeftRight) {
-    swipingLeftRight = false;
-  }
-}
-function handleThumbnailSwiping({ event, absX, absY, dir }) {
-  if (disableThumbnailSwipe)
-    return;
-  if (isThumbnailVertical) {
-    if ((dir === LEFT || dir === RIGHT || swipingLeftRight) && !swipingUpDown) {
-      if (!swipingLeftRight) {
-        swipingLeftRight = true;
+
+  function handleThumbnailSwiping({ event, absX, absY, dir }: SwipeEventData) {
+    if (disableThumbnailSwipe) return;
+    if (isThumbnailVertical) {
+      // if the initial swiping is left/right, prevent moving the thumbnail bar until swipe ends
+      if ((dir === LEFT || dir === RIGHT || swipingLeftRight) && !swipingUpDown) {
+        if (!swipingLeftRight) {
+          swipingLeftRight = true;
+        }
+        return;
       }
-      return;
-    }
-    if ((dir === UP || dir === DOWN) && !swipingUpDown) {
-      swipingUpDown = true;
-    }
-  } else {
-    if ((dir === UP || dir === DOWN || swipingUpDown) && !swipingLeftRight) {
-      if (!swipingUpDown) {
+
+      if ((dir === UP || dir === DOWN) && !swipingUpDown) {
         swipingUpDown = true;
       }
+    } else {
+      // if the initial swiping is up/down, prevent moving the thumbnail bar until swipe ends
+      if ((dir === UP || dir === DOWN || swipingUpDown) && !swipingLeftRight) {
+        if (!swipingUpDown) {
+          swipingUpDown = true;
+        }
+        return;
+      }
+
+      if ((dir === LEFT || dir === RIGHT) && !swipingLeftRight) {
+        swipingLeftRight = true;
+      }
+    }
+
+    const emptySpaceMargin = 20; // 20px to add some margin to show empty space
+
+    let thumbsTranslate;
+    let totalSwipeableLength;
+    let hasSwipedPassedEnd;
+    let hasSwipedPassedStart;
+    let isThumbnailBarSmallerThanContainer;
+
+    const slideY = dir === DOWN ? absY : -absY;
+    const slideX = dir === RIGHT ? absX : -absX;
+
+    if (isThumbnailVertical) {
+      thumbsTranslate = thumbsSwipedTranslate + slideY;
+      totalSwipeableLength = thumbsElementScrollHeight - thumbnailsWrapperHeight + emptySpaceMargin;
+      hasSwipedPassedEnd = Math.abs(thumbsTranslate) > totalSwipeableLength;
+      hasSwipedPassedStart = thumbsTranslate > emptySpaceMargin;
+      isThumbnailBarSmallerThanContainer = thumbsElementScrollHeight <= thumbnailsWrapperHeight;
+    } else {
+      thumbsTranslate = thumbsSwipedTranslate + slideX;
+      totalSwipeableLength = thumbsElementScrollWidth - thumbnailsWrapperWidth + emptySpaceMargin;
+      hasSwipedPassedEnd = Math.abs(thumbsTranslate) > totalSwipeableLength;
+      hasSwipedPassedStart = thumbsTranslate > emptySpaceMargin;
+      isThumbnailBarSmallerThanContainer = thumbsElementScrollWidth <= thumbnailsWrapperWidth;
+    }
+
+    if (isThumbnailBarSmallerThanContainer) {
+      // no need to swipe a thumbnail bar smaller/shorter than its container
       return;
     }
-    if ((dir === LEFT || dir === RIGHT) && !swipingLeftRight) {
-      swipingLeftRight = true;
+
+    if ((dir === LEFT || dir === UP) && hasSwipedPassedEnd) {
+      // prevent further swipeing
+      return;
+    }
+
+    if ((dir === RIGHT || dir === DOWN) && hasSwipedPassedStart) {
+      // prevent further swipeing
+      return;
+    }
+
+    if (stopPropagation) event.stopPropagation();
+
+    if (isThumbnailVertical) {
+      dispatch('thumbsslideoffset', slideY);
+    } else {
+      dispatch('thumbsslideoffset', slideX);
     }
   }
-  const emptySpaceMargin = 20;
-  let thumbsTranslate;
-  let totalSwipeableLength;
-  let hasSwipedPassedEnd;
-  let hasSwipedPassedStart;
-  let isThumbnailBarSmallerThanContainer;
-  const slideY = dir === DOWN ? absY : -absY;
-  const slideX = dir === RIGHT ? absX : -absX;
-  if (isThumbnailVertical) {
-    thumbsTranslate = thumbsSwipedTranslate + slideY;
-    totalSwipeableLength = thumbsElementScrollHeight - thumbnailsWrapperHeight + emptySpaceMargin;
-    hasSwipedPassedEnd = Math.abs(thumbsTranslate) > totalSwipeableLength;
-    hasSwipedPassedStart = thumbsTranslate > emptySpaceMargin;
-    isThumbnailBarSmallerThanContainer = thumbsElementScrollHeight <= thumbnailsWrapperHeight;
-  } else {
-    thumbsTranslate = thumbsSwipedTranslate + slideX;
-    totalSwipeableLength = thumbsElementScrollWidth - thumbnailsWrapperWidth + emptySpaceMargin;
-    hasSwipedPassedEnd = Math.abs(thumbsTranslate) > totalSwipeableLength;
-    hasSwipedPassedStart = thumbsTranslate > emptySpaceMargin;
-    isThumbnailBarSmallerThanContainer = thumbsElementScrollWidth <= thumbnailsWrapperWidth;
+
+  function handleOnThumbnailSwiped() {
+    if (disableThumbnailSwipe) return;
+    resetSwipingDirection();
+    dispatch('thumbnailswiped');
   }
-  if (isThumbnailBarSmallerThanContainer) {
-    return;
-  }
-  if ((dir === LEFT || dir === UP) && hasSwipedPassedEnd) {
-    return;
-  }
-  if ((dir === RIGHT || dir === DOWN) && hasSwipedPassedStart) {
-    return;
-  }
-  if (stopPropagation)
-    event.stopPropagation();
-  if (isThumbnailVertical) {
-    dispatch("thumbsslideoffset", slideY);
-  } else {
-    dispatch("thumbsslideoffset", slideX);
-  }
-}
-function handleOnThumbnailSwiped() {
-  if (disableThumbnailSwipe)
-    return;
-  resetSwipingDirection();
-  dispatch("thumbnailswiped");
-}
-$:
-  cls = clsx(
-    "image-gallery-thumbnails-wrapper",
+
+  $: cls = clsx(
+    'image-gallery-thumbnails-wrapper',
     getThumbnailPositionClassName(thumbnailPosition),
-    { "thumbnails-wrapper-rtl": !isThumbnailVertical && isRTL },
-    { "thumbnails-swipe-horizontal": !isThumbnailVertical && !disableThumbnailSwipe },
-    { "thumbnails-swipe-vertical": isThumbnailVertical && !disableThumbnailSwipe }
+    { 'thumbnails-wrapper-rtl': !isThumbnailVertical && isRTL },
+    { 'thumbnails-swipe-horizontal': !isThumbnailVertical && !disableThumbnailSwipe },
+    { 'thumbnails-swipe-vertical': isThumbnailVertical && !disableThumbnailSwipe }
   );
 </script>
 

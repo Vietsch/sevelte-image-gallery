@@ -1,7 +1,10 @@
-<script>import { createEventDispatcher } from "svelte";
-import SVG from "./SVG.svelte";
-export let isFullscreen;
-const dispatch = createEventDispatcher();
+<script lang="ts">
+  import { createEventDispatcher } from 'svelte';
+  import SVG from './SVG.svelte';
+
+  export let isFullscreen: boolean;
+
+  const dispatch = createEventDispatcher();
 </script>
 
 <button
