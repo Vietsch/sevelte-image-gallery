@@ -10,7 +10,7 @@
     "url": "git+https://github.com/Vietsch/svelte-image-gallery.git"
   },
   "engines": {
-    "node": ">=20.19.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "dev": "vite dev",
