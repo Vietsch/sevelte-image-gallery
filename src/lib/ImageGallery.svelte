@@ -310,11 +310,16 @@
 
   $: _exitFullScreen = () => {
     if (isFullscreen) {
-      if (useBrowserFullscreen) {
+      // Always exit browser fullscreen if active
+      if (document.fullscreenElement) {
         _exitFullScreenAPI();
-      } else {
+      }
+
+      // Reset gallery-specific fullscreen state
+      if (!useBrowserFullscreen) {
         modalFullscreen = false;
       }
+      
       isFullscreen = false;
       // Slide to first image when exiting fullscreen
       slideToIndex(0);

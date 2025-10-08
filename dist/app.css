@@ -145,6 +145,15 @@
   height: calc(100vh - 200px);
   background-color: black;
 }
+
+.image-gallery-content.fullscreen .image-gallery-slides .image-gallery-image {
+  max-height: 100vh;
+  height: 100vh;
+  width: 100vw; 
+  max-width: 100vw;
+  object-fit: contain;
+}
+
 .image-gallery-content.image-gallery-thumbnails-left .image-gallery-slide .image-gallery-image,
 .image-gallery-content.image-gallery-thumbnails-right .image-gallery-slide .image-gallery-image {
   max-height: 100vh;
